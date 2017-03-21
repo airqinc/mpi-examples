@@ -1,60 +1,41 @@
-// mpicc scatter_gather.c -o scatter_gather && mpiexec scatter_gather
+// pk2: mpicc -std=c99 scatter_gather.c -o bin/scatter_gather && mpiexec -n 4 bin/scatter_gather
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
 
- // for usleep
 #include "data_helper.h"
 
-float *create_rands(int num_elements, int max) {
-  float *rands = (float *)malloc(sizeof(float) * num_elements);
-  int i;
-  for (i = 0; i < num_elements; i++) {
-    rands[i] = rand() % max;
-  }
-  return rands;
-}
-
-float calc_avg(float *data, int num_elements) {
-  float sum = 0;
-  int i;
-  for (i = 0; i < num_elements; i++) {
-    sum += data[i];
-  }
-  return sum / num_elements;
-}
-
 int main(int argc, char** argv) {
-  int num_elements_per_proc = 3;
-  int max_random_value = 10;
-  srand(7);
+  const int ELEMENTS_PER_PROC = 3;
+  const int MAX_RANDOM_VAL = 10;
+  const int SEED = 7;
+  srand(SEED);
 
   MPI_Init(NULL, NULL);
 
-  int world_rank;
+  int world_rank, world_size;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-  int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
   // buffer for root process
   float *rands = NULL;
   if (world_rank == 0) {
-    rands = create_rands(num_elements_per_proc * world_size, max_random_value);
+    rands = create_rands(ELEMENTS_PER_PROC * world_size, MAX_RANDOM_VAL);
   }
 
   // buffer for each process
-  float *buff_rands = (float *)malloc(sizeof(float) * num_elements_per_proc);
+  float *buff_rands = (float *)malloc(sizeof(float) * ELEMENTS_PER_PROC);
 
-  // Scatter data from the root process to all processes
-  MPI_Scatter(rands, num_elements_per_proc, MPI_FLOAT, buff_rands,
-              num_elements_per_proc, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  // Scatter data from the root process to all processes and print it
+  MPI_Scatter(rands, ELEMENTS_PER_PROC, MPI_FLOAT, buff_rands,
+              ELEMENTS_PER_PROC, MPI_FLOAT, 0, MPI_COMM_WORLD);
+  dumpData ( world_rank , world_size , ELEMENTS_PER_PROC , buff_rands , " Data " , 1);
 
-  dumpData ( world_rank , world_size , num_elements_per_proc , buff_rands , " Data " , 1);
-  // Compute the average of subset
-  float sub_avg = calc_avg(buff_rands, num_elements_per_proc);
+  // Compute the average of each subset and print it
+  float sub_avg = calc_avg(buff_rands, ELEMENTS_PER_PROC);
   printf(" Processor %d: Avg of subset is %f\n", world_rank, sub_avg);
 
-  // Gather all partial averages down to the root process
+  // Gather all partial averages
   float *sub_avgs = NULL;
   if (world_rank == 0) {
     sub_avgs = (float *)malloc(sizeof(float) * world_size);
@@ -65,10 +46,19 @@ int main(int argc, char** argv) {
   if (world_rank == 0) {
     float avg = calc_avg(sub_avgs, world_size);
     printf(" Processor %d: Avg of all elements is %f\n", world_rank, avg);
-    // Compute the average across the original data for comparison
-    float original_data_avg = calc_avg(rands, num_elements_per_proc * world_size);
+    // Check original data's average, just to check everything is OK
+    float original_data_avg = calc_avg(rands, ELEMENTS_PER_PROC * world_size);
     printf(" Processor %d: Avg of original data is %f\n", world_rank, original_data_avg);
   }
+
+
+  if (world_rank == 0) {
+    free(rands);
+    free(sub_avgs);
+  }
+  free(buff_rands);
+
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
+  return 0;
 }

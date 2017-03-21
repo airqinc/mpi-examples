@@ -4,35 +4,18 @@
 #include <stdlib.h>
 #include <mpi.h>
 
-// # include <cstdio.h>
-# include <unistd.h>
+#include <unistd.h>
 
-const int SIZE_PER_PROCESS = 2;
+// #include "data_helper.h"
+
+const int SIZE_PER_PROCESS = 1;
 
 
 void dumpData ( int rank , int numProc , int dataPerProcess ,
   int* v , const char * label , int sync )
-  //
-  // Displays data stored in each process . Optionally uses
-  // MPI_Barrier () and usleep () to synchronize output in
-  // process rank order .
-  //
-  // Input :
-  // int rank - process rank
-  // int numProc - number of processes
-  // int * v - array of data to display
-  // const char * label - label for data (8 character max )
-  // bool sync - Synchronize with barrier if true
-  // ( default = true )
-  //
-  // Display :
-  // Integer data in array v . Displays 4 place values with
-  // leading zeros .
-  //
   {
     for ( int p = 0; p < numProc ; p ++ ) {
       if ( rank == p ) {
-        // It ’s my turn to display data ...
         printf ( " Process %2d : %-8s = " , rank , label );
         for ( int i = 0; i < numProc ; i ++ ) {
           for ( int j = 0; j < dataPerProcess ; j ++ ) {
@@ -53,9 +36,6 @@ void dumpData ( int rank , int numProc , int dataPerProcess ,
 
   int main ( int argc , char * argv [] )
   {
-    // Initialize the MPI system and determine the number
-    // of collaborating processes and the rank of the
-    // current process .
     int numProc , rank ;
     MPI_Init ( & argc , & argv );
     MPI_Comm_size ( MPI_COMM_WORLD , & numProc );
@@ -87,12 +67,12 @@ void dumpData ( int rank , int numProc , int dataPerProcess ,
       v , SIZE_PER_PROCESS , MPI_INT ,
       MPI_COMM_WORLD );
       // Display received data
-      dumpData ( rank , numProc , SIZE_PER_PROCESS , v , " After ", 1 );
-      // Clean up
-      // delete [] u ;
-      free(u);
-      // delete [] v ;
-      free(v);
-      MPI_Finalize ();
-      return 0;
-    }
+    dumpData ( rank , numProc , SIZE_PER_PROCESS , v , " After ", 1 );
+    // Clean up
+    // delete [] u ;
+    free(u);
+    // delete [] v ;
+    free(v);
+    MPI_Finalize ();
+    return 0;
+  }
