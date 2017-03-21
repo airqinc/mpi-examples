@@ -26,7 +26,7 @@ float calc_avg(float *data, int num_elements) {
 int main(int argc, char** argv) {
   int num_elements_per_proc = 50;
   int max_random_value = 500;
-  srand(10);
+  srand(7);
 
   MPI_Init(NULL, NULL);
 
