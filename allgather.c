@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
   MPI_Allgather(&sub_avg, 1, MPI_FLOAT, avgs, 1, MPI_FLOAT, MPI_COMM_WORLD);
 
   float avg = calc_avg(avgs, world_size);
-  printf(" Processor %d: Avg of all elements is %f\n", world_rank, avg);
+  printf(" Process %d: Avg of all elements is %f\n", world_rank, avg);
 
   if (world_rank == 0) {
     free(rands);

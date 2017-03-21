@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
   // Compute the average of each subset and print it
   float sub_avg = calc_avg(buff_rands, ELEMENTS_PER_PROC);
-  printf(" Processor %d: Avg of subset is %f\n", world_rank, sub_avg);
+  printf(" Process %d: Avg of subset is %f\n", world_rank, sub_avg);
 
   // Gather all partial averages
   float *sub_avgs = NULL;
@@ -45,10 +45,10 @@ int main(int argc, char** argv) {
   // compute total average from partial averages
   if (world_rank == 0) {
     float avg = calc_avg(sub_avgs, world_size);
-    printf(" Processor %d: Avg of all elements is %f\n", world_rank, avg);
+    printf(" Process %d: Avg of all elements is %f\n", world_rank, avg);
     // Check original data's average, just to check everything is OK
     float original_data_avg = calc_avg(rands, ELEMENTS_PER_PROC * world_size);
-    printf(" Processor %d: Avg of original data is %f\n", world_rank, original_data_avg);
+    printf(" Process %d: Avg of original data is %f\n", world_rank, original_data_avg);
   }
 
 
