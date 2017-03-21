@@ -3,6 +3,49 @@
 #include <stdlib.h>
 #include <mpi.h>
 
+#include <unistd.h>
+
+void dumpData ( int rank , int numProc , int dataPerProcess ,
+  float* v , const char * label , int sync )
+  //
+  // Displays data stored in each process . Optionally uses
+  // MPI_Barrier () and usleep () to synchronize output in
+  // process rank order .
+  //
+  // Input :
+  // int rank - process rank
+  // int numProc - number of processes
+  // int * v - array of data to display
+  // const char * label - label for data (8 character max )
+  // bool sync - Synchronize with barrier if true
+  // ( default = true )
+  //
+  // Display :
+  // Integer data in array v . Displays 4 place values with
+  // leading zeros .
+  //
+  {
+    for ( int p = 0; p < numProc ; p ++ ) {
+      if ( rank == p ) {
+        // It ’s my turn to display data ...
+        printf ( " Processor %2d: %-8s = " , rank , label );
+        for ( int i = 0; i < numProc -1; i ++ ) {
+          for ( int j = 0; j < dataPerProcess ; j ++ ) {
+            int k = i * dataPerProcess + j ;
+            printf ( " %f " , v [ k ] );
+          }
+        }
+        printf ( " \n" );
+        fflush ( stdout );
+      }
+      if ( sync ) {
+        MPI_Barrier ( MPI_COMM_WORLD );
+        usleep ( 10000 ); // pause 0.01 seconds for I / O
+      }
+    }
+  }
+
+
 float *create_rands(int num_elements, int max) {
   float *rands = (float *)malloc(sizeof(float) * num_elements);
   int i;
@@ -22,7 +65,7 @@ float calc_avg(float *data, int num_elements) {
 }
 
 int main(int argc, char** argv) {
-  int num_elements_per_proc = 50;
+  int num_elements_per_proc = 5;
   int max_random_value = 500;
   srand(7);
 
@@ -46,8 +89,10 @@ int main(int argc, char** argv) {
   MPI_Scatter(rands, num_elements_per_proc, MPI_FLOAT, buff_rands,
               num_elements_per_proc, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
+  dumpData ( world_rank , world_size , num_elements_per_proc , buff_rands , " Data " , 1);
   // Compute the average of subset
   float sub_avg = calc_avg(buff_rands, num_elements_per_proc);
+  printf(" Processor %d: Avg of subset is %f\n", world_rank, sub_avg);
 
   // Gather all partial averages down to the root process
   float *sub_avgs = NULL;
@@ -59,11 +104,10 @@ int main(int argc, char** argv) {
   // compute total average from partial averages
   if (world_rank == 0) {
     float avg = calc_avg(sub_avgs, world_size);
-    printf("Processor %d: Avg of all elements is %f\n", world_rank, avg);
+    printf(" Processor %d: Avg of all elements is %f\n", world_rank, avg);
     // Compute the average across the original data for comparison
-    float original_data_avg =
-      calc_avg(rands, num_elements_per_proc * world_size);
-    printf("Processor %d: Avg of original data is %f\n", world_rank, original_data_avg);
+    float original_data_avg = calc_avg(rands, num_elements_per_proc * world_size);
+    printf(" Processor %d: Avg of original data is %f\n", world_rank, original_data_avg);
   }
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
