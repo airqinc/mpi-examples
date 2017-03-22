@@ -31,3 +31,19 @@ void dumpData (int world_rank, int world_size, int dataPerProcess, float* v, con
     }
     return sum / num_elements;
   }
+
+  int *create_ranks(int world_size, int first) {
+    int *ranks = (int *)malloc(sizeof(int) * world_size);
+    int j;
+    if(first){
+      j = 0;
+    }
+    else{
+      j = world_size/2;
+    }
+    for (int i = 0; i < world_size/ 2; i++) {
+      ranks[i] = j;
+      j++;
+    }
+    return ranks;
+  }
