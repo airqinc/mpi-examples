@@ -51,7 +51,6 @@ int main(int argc, char** argv) {
     printf(" Process %d: Avg of original data is %f\n", world_rank, original_data_avg);
   }
 
-
   if (world_rank == 0) {
     free(rands);
     free(sub_avgs);
