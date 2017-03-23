@@ -28,6 +28,7 @@ edit autoexec.bat
 
 ## Usage example
 ```sh
+mkdir bin
 ./mpi_exec hello.c 4
 ```
 
