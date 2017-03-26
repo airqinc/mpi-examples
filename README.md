@@ -29,7 +29,7 @@ edit autoexec.bat
 ## Usage example
 ```sh
 mkdir bin
-bash mpi_exec hello.c 4
+bash mpi_exec.sh hello.c 4
 ```
 
 <!--## Development setup
