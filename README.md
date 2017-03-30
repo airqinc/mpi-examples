@@ -64,6 +64,7 @@ AirQ – airq@protonmail.com
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://gitlab.com/airq](https://gitlab.com/airq)
+[https://github.com/airqinc](https://github.com/airqinc)
 
 <!-- variables -->
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
