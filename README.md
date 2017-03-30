@@ -59,11 +59,11 @@ npm test
 
 ## Meta
 
-Jeferson Arboleda – me@jglab.me
+AirQ – airq@protonmail.com  
 
 Distributed under the MIT license. See ``LICENSE`` for more information.
 
-[https://gitlab.com/jag7](https://gitlab.com/jag7)
+[https://gitlab.com/airq](https://gitlab.com/airq)
 
 <!-- variables -->
 [npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
