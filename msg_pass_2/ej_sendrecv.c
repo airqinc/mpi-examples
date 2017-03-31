@@ -1,0 +1,29 @@
+#include "mpi.h"
+#include <stdio.h>
+ 
+int main(int argc, char *argv[])
+{
+    int myid, numprocs, left, right;
+    int *buffer = NULL;
+    MPI_Status status;
+ 
+    MPI_Init(&argc,&argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+ 
+    right = (myid + 1) % numprocs;
+    left = myid - 1;
+    if (left < 0)
+        left = numprocs - 1;
+    
+    buffer = malloc(10*sizeof(int));
+    buffer[0] = myid;
+
+	// Realiza el envio usando MPI_Sendrecv_replace
+	// MPI_Sendrecv_replace( ... );
+	
+    printf("Proc %d - Received: %d\n", myid, buffer[0]);
+    MPI_Finalize();
+    free(buffer);
+    return 0;
+}
