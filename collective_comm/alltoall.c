@@ -69,9 +69,7 @@ void dumpData ( int rank , int numProc , int dataPerProcess ,
       // Display received data
     dumpData ( rank , numProc , SIZE_PER_PROCESS , v , " After ", 1 );
     // Clean up
-    // delete [] u ;
     free(u);
-    // delete [] v ;
     free(v);
     MPI_Finalize ();
     return 0;
