@@ -7,7 +7,6 @@
 int main(int argc, char** argv) {
   const int ELEMENTS_PER_PROC = 3;
   const int MAX_RANDOM_VAL = 10;
-  const int SEED = 7;
 
   MPI_Init(NULL, NULL);
 
