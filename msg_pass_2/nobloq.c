@@ -5,6 +5,7 @@ int main(int argc, char *argv[])  {
 	int numtasks, rank, next, prev, buf[2], tag1=1, tag2=2;
 	MPI_Request reqs[4];   // required variable for non-blocking calls
 	MPI_Status stats[4];   // required variable for Waitall routine
+	//int flag;
 
 	MPI_Init(&argc,&argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
@@ -22,7 +23,8 @@ int main(int argc, char *argv[])  {
 
 	MPI_Isend(&rank, 1, MPI_INT, prev, tag2, MPI_COMM_WORLD, &reqs[2]);
 	MPI_Isend(&rank, 1, MPI_INT, next, tag1, MPI_COMM_WORLD, &reqs[3]);
-
+	//MPI_Test(&reqs[0], &flag, stats);
+	//printf("Estado del primer receive: %d\n", flag);
 	  // do some work while sends/receives progress in background
 
 	// wait for all non-blocking operations to complete
