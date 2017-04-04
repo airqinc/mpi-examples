@@ -6,20 +6,16 @@
 
 int main(int argc, char** argv) {
   const int ELEMENTS_PER_PROC = 3;
-  const int MAX_RANDOM_VAL = 10;
-  const int SEED = 7;
-  srand(SEED);
-
-
-  MPI_Init(NULL, NULL);
+  const int MAX_RANDOM_VAL = 20;
 
   int world_rank, world_size;
+  MPI_Init(NULL, NULL);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
   // Create a random array of elements on all processes.
   float *rands = NULL;
-  rands = create_rands(ELEMENTS_PER_PROC, MAX_RANDOM_VAL);
+  rands = create_rands(ELEMENTS_PER_PROC, MAX_RANDOM_VAL, world_rank);
 
   dumpData ( world_rank , world_size , ELEMENTS_PER_PROC , rands , " Data " , 1);
 

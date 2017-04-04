@@ -7,8 +7,6 @@
 int main(int argc, char** argv) {
   const int ELEMENTS_PER_PROC = 3;
   const int MAX_RANDOM_VAL = 10;
-  const int SEED = 7;
-  srand(SEED);
 
   MPI_Init(NULL, NULL);
 
@@ -19,7 +17,7 @@ int main(int argc, char** argv) {
   // buffer for root process
   float *rands = NULL;
   if (world_rank == 0) {
-    rands = create_rands(ELEMENTS_PER_PROC * world_size, MAX_RANDOM_VAL);
+    rands = create_rands(ELEMENTS_PER_PROC * world_size, MAX_RANDOM_VAL, world_rank);
   }
 
   // buffer for each process
