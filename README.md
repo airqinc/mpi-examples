@@ -38,7 +38,8 @@ npm test
 -->
 
 ## MPD daemon for running MPI programmes locally
-``` #Create mpd .conf file
+``` 
+#Create mpd .conf file
 $ cd $HOME
 $ touch .mpd.conf
 $ chmod 600 .mpd.conf
