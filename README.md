@@ -37,6 +37,19 @@ npm test
 ```
 -->
 
+## MPD daemon for running MPI programmes locally
+```#Crear el fichero conf del demonio mpd
+$ cd $HOME
+$ touch .mpd.conf
+$ chmod 600 .mpd.conf
+
+#Añadir contraseña propia (passwd) al demonio mpd
+$ MPD_SECRETWORD=passwd >> .mpd.conf
+
+#Lanzar el demonio mpd en background
+$ Mpd & 
+```
+
 ## Contributing
 
 1. Fork it!
